@@ -35,12 +35,17 @@ html, body, #tapArea {
 
 /* 木目看板 */
 .woodSign,
-#tapArea,
-.panel {
+#tapArea {
   width: 92%;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 320px;
+  margin: 20px auto;
+
+  padding: 40px;
+  font-size: 28px;
+
+  border-radius: 20px;
+
+  touch-action: manipulation;
 }
 
 .woodSign{
@@ -203,13 +208,17 @@ h1{
 }
 
 button{
-  margin:4px;
-  padding:10px 14px;
-  border-radius:18px;
+  margin:6px;
+  padding:12px 16px;
+  border-radius:14px;
+
   border:none;
   background:#ff5fa8;
   color:#fff;
+
   font-weight:700;
+  font-size:16px;
+
   cursor:pointer;
 }
 
@@ -230,16 +239,23 @@ button:disabled{
 .panel{
   display:none;
   position:fixed;
-  top:10%;
+
+  top:8%;
   left:50%;
   transform:translateX(-50%);
-  width:580px;
+
+  width:92%;
+  max-width:520px;
+
   background:#fff;
   border-radius:18px;
   padding:14px;
+
   box-shadow:0 15px 40px rgba(255,150,200,0.35);
+
   max-height:75%;
   overflow:auto;
+
   z-index:200;
 }
 
