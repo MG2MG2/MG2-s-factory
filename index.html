@@ -849,28 +849,32 @@ function doRebirth(){
 
 // ================= セーブ
 function saveGame(){
-if(!confirm("セーブ？")) return;
-
-localStorage.setItem("mg2",JSON.stringify({
-money,owned,rebirth,gachaCount
-}));
-
-alert("完了");
+  localStorage.setItem("mg2", JSON.stringify({
+    money: money || 0,
+    owned: owned || {},
+    rebirth: rebirth || 0,
+    gachaCount: gachaCount || 0
+  }));
 }
 
 function loadGame(){
-if(!confirm("ロード？")) return;
+  let d = localStorage.getItem("mg2");
+  if(!d) return;
 
-let d=JSON.parse(localStorage.getItem("mg2"));
-if(!d) return;
+  try {
+    d = JSON.parse(d);
+  } catch(e){
+    console.log("セーブデータ破損");
+    return;
+  }
 
-money=d.money;
-owned=d.owned;
-rebirth=d.rebirth;
-gachaCount=d.gachaCount;
+  money = d.money ?? 0;
+  owned = d.owned ?? {};
+  rebirth = d.rebirth ?? 0;
+  gachaCount = d.gachaCount ?? 0;
 
-updateUI();
-renderShop();
+  updateUI();
+  renderShop();
 }
 
 function resetGame(){
