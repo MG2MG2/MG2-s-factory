@@ -733,7 +733,7 @@ return Math.floor(f.baseCost*Math.pow(1.15,lv));
 }
 
 function buyFacility(id){
-  let f = facilities.find(x => x.id == id);
+  let f = facilities.find(x => x.id === id);
   if(!f) return;
 
   // 所持レベル取得
@@ -750,8 +750,11 @@ function buyFacility(id){
   // ------------------------
   // ★ キャッシュをリセットして即反映
   // ------------------------
-  resetStatsCache();   // これで production / clickPower キャッシュも初期化
-  updateUI();          // UI もすぐ更新
+  resetStatsCache();        // production / clickPower キャッシュをリセット
+  const st = calcStats();   // キャッシュを強制再計算
+
+  // UI を即更新（自動加算と同じ関数で統一）
+  updateUIFast(st);
 
   // 施設パネル更新
   renderShop();
