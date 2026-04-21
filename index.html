@@ -701,7 +701,9 @@ setInterval(() => {
 
 }, 1000);
   
-  function updateUIFast(st){
+function updateUIFast(st){
+
+  const r = calcGachaRates(); // ←これ必須
 
   document.getElementById("money").innerText = format(money);
   document.getElementById("production").innerText = format(st.production);
@@ -711,7 +713,15 @@ setInterval(() => {
   document.getElementById("gachaMoney").innerText = format(money);
   document.getElementById("gachaCost").innerText = format(getGachaCost());
 
-  // ★追加（重要）
+  document.getElementById("gachaRate").innerHTML =
+`☆1：${(r.r1*100).toFixed(3)}%<br>
+☆2：${(r.r2*100).toFixed(3)}%<br>
+★3：${(r.r3*100).toFixed(3)}%<br>
+★4：${(r.r4*100).toFixed(3)}%<br>
+★★5：${(r.r5*100).toFixed(3)}%<br>
+★★★(101)：${(r.r6*100).toFixed(6)}%<br>
+★★★(102)：${(r.r7*100).toFixed(8)}%`;
+
   document.getElementById("rebirthReq").innerText = format(nextRebirth());
 }
   
