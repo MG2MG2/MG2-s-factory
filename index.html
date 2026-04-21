@@ -888,17 +888,46 @@ document.getElementById("gachaLog").innerHTML="";
 }
 
 // ================= 転生
-function doRebirth(){
-
-  if(calcStats().production < nextRebirth()) return;
-
-  rebirth++;
-  money = 0;
-  owned = {};
-  gachaCount = 0;
+// ================= キャッシュリセット
+function resetStatsCache(){
+  statsCache = {
+    production: 0,
+    clickPower: 1,
+    dirty: true,
+    last: 0
+  };
 }
 
+// ================= 転生判定
+function canRebirth(){
+  return calcStats().production >= nextRebirth();
+}
 
+// ================= 転生処理
+function doRebirth(){
+
+  if(!canRebirth()) return;  // 転生条件未満なら何もしない
+
+  // ------------------
+  // 転生実行
+  // ------------------
+  rebirth++;        // 転生回数増加
+  money = 0;        // 所持金リセット
+  owned = {};       // 施設リセット
+  gachaCount = 0;   // ガチャ回数リセット
+
+  // ------------------
+  // ステータスキャッシュを初期化
+  // ------------------
+  resetStatsCache();
+
+  // ------------------
+  // UI 更新
+  // ------------------
+  updateUI();
+  renderShop();
+}
+  
 // =========================
 // 💾 セーブ
 // =========================
