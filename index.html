@@ -326,6 +326,7 @@ text-align:left;
 <h3>ガチャ</h3>
 <div style="font-size:12px;color:#666;margin-bottom:10px;">
 施設をランダムで獲得します。<br>
+レア度が高いほど出にくく、レア施設ほど効率がいい施設です。
 レア度が高いほど出にくく、効率がいい施設<br>
 ガチャを引くたびに価格が上がります<br>
 転生回数に応じて１回あたりの上限が決まっています。
@@ -556,26 +557,42 @@ el.remove();
 
 
 // ================= ステータス
-et p = 0;
+function calcStats(){
+let p = 0;
 let c = 1;
+et p = 0;
+  let c = 1;
 
 for(let id in owned){
 let fid = Number(id);
 let f = facilities.find(x => x.id === fid);
 if(!f) continue;
+  for(let id in owned){
+    let fid = Number(id);
+    let f = facilities.find(x => x.id === fid);
+    if(!f) continue;
 
 let lv = owned[id];
+    let lv = owned[id];
 
-p += f.prod * Math.pow(lv, 1.0); // ← prod に修正
+p += f.click * Math.pow(lv, 1.0);
 c += f.click * Math.pow(lv, 1.1);
 }
+    p += f.prod * Math.pow(lv, 1.0); // ← prod に修正
+    c += f.click * Math.pow(lv, 1.1);
+  }
 
 let b = 1 + rebirth * 0.15;
+  let b = 1 + rebirth * 0.15;
 
 return {
 production: p * b,
 clickPower: c * b
 };
+  return {
+    production: p * b,
+    clickPower: c * b
+  };
 }
 
 function nextRebirth(){//転生の重さ調整🔥🔥🔥🔥🔥🔥🔥🔥
@@ -614,21 +631,21 @@ document.getElementById("gachaRate").innerHTML =
 
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
-// 基本計算
+return Math.floor(10*Math.pow(1.001,gachaCount));
+  // 基本計算
   let cost = Math.floor(10 * Math.pow(1.01, gachaCount));
-  let cost = Math.floor(10 * Math.pow(1.03, gachaCount));
 
-// 転生ごとの上限設定
-let cap = 1_000_000; // デフォルト 1回転生
+  // 転生ごとの上限設定
+  let cap = 1_000_000; // デフォルト 1回転生
 
-if(rebirth === 0) cap = 1_000_000;       // 1回目転生前
-else if(rebirth === 1) cap = 10_000_000; // 2回目転生
-else if(rebirth >= 2) cap = 100_000_000; // 3回目以降
+  if(rebirth === 0) cap = 1_000_000;       // 1回目転生前
+  else if(rebirth === 1) cap = 10_000_000; // 2回目転生
+  else if(rebirth >= 2) cap = 100_000_000; // 3回目以降
 
-// 上限を適用
-if(cost > cap) cost = cap;
+  // 上限を適用
+  if(cost > cap) cost = cap;
 
-return cost;
+  return cost;
 }
 
 
