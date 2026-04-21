@@ -529,8 +529,8 @@ let t=theme(i);
 facilities.push({
 id:i,
 name:t.name,
-prod: t.base * Math.pow(1.10, i),
-click: Math.floor(1 + Math.pow(i, 0.9) / 5),
+prod: t.base * Math.pow(1.09, i),
+click: Math.floor(t.base * 0.4 * Math.pow(1.07, i)),
 baseCost:t.cost
 });
 }
