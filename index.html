@@ -591,6 +591,10 @@ function calcStats(){
   return statsCache;
 }
 
+  function updateStatsUI() {
+  const st = calcStats();
+  updateUIFast(st);
+}
   
 // ================= UI
 function updateUI(){
@@ -733,19 +737,23 @@ return Math.floor(f.baseCost*Math.pow(1.15,lv));
 }
 
 function buyFacility(id){
-  let f = facilities.find(x => x.id === id);
+  let f = facilities.find(x => x.id == id);
   if(!f) return;
 
-  // 所持レベル取得
   let lv = owned[id] || 0;
-
-  // 購入コスト計算
   let cost = getCost(f);
-  if(money < cost) return;  // お金不足なら何もしない
+  if(money < cost) return;
 
-  // お金と施設レベル更新
   money -= cost;
   owned[id] = lv + 1;
+
+  // ← 修正箇所
+  resetStatsCache();
+  const st = calcStats();
+  updateUIFast(st);
+
+  renderShop();
+}
 
   // ------------------------
   // ★ キャッシュをリセットして即反映
@@ -838,45 +846,57 @@ return "#000";
 }
 
 function pull(times){
-let cost=getGachaCost()*times;
+  let cost = getGachaCost() * times;
 
-if(money<cost){
-alert("お金不足");
-return;
+    if(money < cost){
+        alert("お金不足");
+        return;
+    }
+
+    money -= cost;
+    let log = document.getElementById("gachaLog");
+    log.innerHTML = "";
+
+    for(let i=0;i<times;i++){
+        gachaCount++;
+
+        let f = drawGacha();
+        let lv = owned[f.id] || 0;
+        owned[f.id] = lv + 1;
+
+        // ★ ここを追加
+        resetStatsCache();
+        const st = calcStats();
+        updateUIFast(st);
+
+        let rarity = "";
+        if(f.id <= 20) rarity = "☆1";
+        else if(f.id <= 40) rarity = "☆2";
+        else if(f.id <= 60) rarity = "★3";
+        else if(f.id <= 80) rarity = "★4";
+        else if(f.id <= 100) rarity = "★★5";
+        else if(f.id == 101) rarity = "★★★";
+        else if(f.id == 102) rarity = "★★★";
+
+        let color = getRarityColor(rarity);
+
+        log.innerHTML =
+        `<span style="color:${color}; font-weight:bold;">
+        [${rarity}][No.${f.id}] ${f.name} +1
+        </span><br>` + log.innerHTML;
+    }
+
+    renderShop();
 }
 
-money-=cost;
+  // ------------------------
+  // ★ ここでキャッシュをリセットして即反映
+  // ------------------------
+  resetStatsCache();
+  const st = calcStats();
+  updateUIFast(st);
 
-let log=document.getElementById("gachaLog");
-log.innerHTML="";
-
-for(let i=0;i<times;i++){
-gachaCount++;
-
-let f = drawGacha();
-
-let rarity = "";
-if(f.id <= 20) rarity = "☆1";
-else if(f.id <= 40) rarity = "☆2";
-else if(f.id <= 60) rarity = "★3";
-else if(f.id <= 80) rarity = "★4";
-else if(f.id <= 100) rarity = "★★5";
-else if(f.id == 101) rarity = "★★★";
-else if(f.id == 102) rarity = "★★★";
-
-let lv=owned[f.id]||0;
-owned[f.id]=lv+1;
-
-let color = getRarityColor(rarity);
-
-log.innerHTML =
-`<span style="color:${color}; font-weight:bold;">
-[${rarity}][No.${f.id}] ${f.name} +1
-</span><br>` + log.innerHTML;
-}
-
-renderShop();
-updateUI();
+  renderShop();
 }
 
 // ================= タブ
