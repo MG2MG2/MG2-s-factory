@@ -555,21 +555,21 @@ el.remove();
 
 // ================= ステータス
 function calcStats(){
-let p=0,c=1;
+let p = 0;
+let c = 1;
 
 for(let id in owned){
-let f=facilities.find(x=>x.id==id);
+let f = facilities.find(x => x.id == Number(id));
 
-p += f.prod * Math.pow(owned[id], f.id <= 20 ? 0.95 : 0.85); // ←施設の重なり🔥🔥🔥🔥🔥
-
-click: Math.floor(1 + Math.pow(i, 0.9) / 5)
+p += f.prod * Math.pow(owned[id], f.id <= 20 ? 0.95 : 0.85);
+c += f.click * Math.pow(owned[id], 1.1);
 }
 
-let b=1+rebirth*0.15;
+let b = 1 + rebirth * 0.15;
 
 return {
-production:p*b,
-clickPower:c*b
+production: p * b,
+clickPower: c * b
 };
 }
 
