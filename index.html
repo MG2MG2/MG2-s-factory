@@ -466,7 +466,7 @@ function getGachaCost(){
 
 
 function calcGachaRates(){
-  let X = 1.6; // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
+  let X = 1.4; // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
 
   let weights = [];
   let total = 0;
@@ -589,7 +589,7 @@ function drawGacha(){
   let weights = [];
 
   pool.forEach(f=>{
-    let w = 1 / Math.pow(f.id, 1.6); // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
+    let w = 1 / Math.pow(f.id, 1.4); // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
     weights.push(w);
     total += w;
   });
