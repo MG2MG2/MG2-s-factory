@@ -8,6 +8,7 @@
 <!-- フォント読み込み（ここが2-1） -->
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
 
+
 <style>
 body{
 margin:0;
@@ -132,7 +133,7 @@ cursor: pointer;
 }
 
 /* =========================
-  TAPボタン押下エフェクト
+ TAPボタン押下エフェクト
 ========================= */
 #tapArea:active{
 transform: scale(0.95);
@@ -146,7 +147,7 @@ transition: transform 0.08s ease;
 }
 
 /* =========================
-  浮く数字（+123とか）
+ 浮く数字（+123とか）
 ========================= */
 .tapFloat{
 position: absolute;
@@ -178,33 +179,21 @@ display:block;
 object-fit: contain;
 }
 
-  /* ボタンの大きさ管理 */
 button{
-  button{
-  margin:8px;
-  padding:20px 30px;
-  font-size:18px;
-  font-weight:700;
-
-  border-radius:18px;
-  border:none;
-  background:#5fd3ff;
-  color:#fff;
-
-  min-height:48px;
-  min-width:140px;
+margin:4px;
+padding:10px 14px;
+padding:14px 18px;
+border-radius:18px;
+border:none;
+background:#ff5fa8;
+background:#5fd3ff;
+color:#fff;
+font-weight:700;
+cursor:pointer;
 }
 
-/* 押した時 */
-button:active{
-  transform:scale(0.96);
-}
-
-/* 無効ボタン */
 button:disabled{
-  background:#ccc;
-  color:#888;
-  cursor:not-allowed;
+background:#ccc;
 }
 
 #overlay{
@@ -553,7 +542,7 @@ let f=facilities.find(x=>x.id==id);
 
 p += f.prod * Math.pow(owned[id], f.id <= 20 ? 0.95 : 0.85); // ←施設の重なり🔥🔥🔥🔥🔥
 
-c += f.click * Math.pow(owned[id], 1.1);
+c += f.click * owned[id];
 }
 
 let b=1+rebirth*0.15;
@@ -590,22 +579,22 @@ let r = calcGachaRates();
 
 document.getElementById("gachaRate").innerHTML =
 `☆1：${(r.r1*100).toFixed(3)}%<br>
- ☆2：${(r.r2*100).toFixed(3)}%<br>
- ★3：${(r.r3*100).toFixed(3)}%<br>
- ★4：${(r.r4*100).toFixed(3)}%<br>
- ★★5：${(r.r5*100).toFixed(3)}%<br>
- ★★★(101)：${(r.r6*100).toFixed(6)}%<br>
- ★★★(102)：${(r.r7*100).toFixed(8)}%`;
+☆2：${(r.r2*100).toFixed(3)}%<br>
+★3：${(r.r3*100).toFixed(3)}%<br>
+★4：${(r.r4*100).toFixed(3)}%<br>
+★★5：${(r.r5*100).toFixed(3)}%<br>
+★★★(101)：${(r.r6*100).toFixed(6)}%<br>
+★★★(102)：${(r.r7*100).toFixed(8)}%`;
 }
 
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
-return Math.floor(10*Math.pow(1.03,gachaCount));
+return Math.floor(10*Math.pow(1.08,gachaCount));
 }
 
 
 function calcGachaRates(){
-let X = 1.4; // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
+let X = 1.6; // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
 
 let weights = [];
 let total = 0;
@@ -696,7 +685,7 @@ div.className="card";
 
 div.innerHTML=
 `${f.name} LV${lv}<br>
-     生産:${(f.prod*lv).toFixed(1)} / タップ:${(f.click*lv).toFixed(1)}<br>`;
+    生産:${(f.prod*lv).toFixed(1)} / タップ:${(f.click*lv).toFixed(1)}<br>`;
 
 let btn=document.createElement("button");
 btn.innerText=can?`購入(${format(cost)})`:"未解放";
@@ -728,7 +717,7 @@ let total = 0;
 let weights = [];
 
 pool.forEach(f=>{
-let w = 1 / Math.pow(f.id, 1.4); // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
+let w = 1 / Math.pow(f.id, 1.6); // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
 weights.push(w);
 total += w;
 });
@@ -793,8 +782,8 @@ let color = getRarityColor(rarity);
 
 log.innerHTML =
 `<span style="color:${color}; font-weight:bold;">
- [${rarity}][No.${f.id}] ${f.name} +1
- </span><br>` + log.innerHTML;
+[${rarity}][No.${f.id}] ${f.name} +1
+</span><br>` + log.innerHTML;
 }
 
 renderShop();
