@@ -566,7 +566,7 @@ if(!f) continue;
 let lv = owned[id];
 
 p += f.prod * Math.pow(lv, f.id <= 20 ? 0.95 : 0.85);
-c += f.click * Math.pow(lv, 1.1);
+c += f.click * Math.pow(lv, 0.95);
 }
 
 let b = 1 + rebirth * 0.15;
