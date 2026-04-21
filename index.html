@@ -619,30 +619,32 @@ document.getElementById("gachaRate").innerHTML =
 
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
-    // gachaCount が 0 なら初期価格 10 から
-    let cost = Math.floor(10 * Math.pow(1.03, gachaCount));
 
-    // 転生ごとの上限設定
-    let cap = 1_000_000; // 転生0
-    if(rebirth === 1) cap = 10_000_000;    // 1回転生
-    else if(rebirth >= 2) cap = 100_000_000; // 2回転生以上
+    const base = 10;
+    const rate = 1.03;
 
-    // 上限を適用
-    if(cost > cap) cost = cap;
+    let cost = Math.floor(base * Math.pow(rate, gachaCount));
 
-    return cost;
+    let cap = 1_000_000;
+
+    if(rebirth === 1) cap = 10_000_000;
+    else if(rebirth >= 2) cap = 100_000_000;
+
+    return Math.min(cost, cap);
 }
 
 // ================= 転生時に gachaCount をリセット
-function doRebirth(){
-    if(calcStats().production < nextRebirth()) return;
+  function doRebirth(){
+if(calcStats().production < nextRebirth()) return;
 
     rebirth++;
     money = 0;
     owned = {};
-    gachaCount = 0; // ← これを追加
+
+    gachaCount = 0; // ← 必須（これが抜けると全部崩れる）
 
     updateUI();
+    renderShop();
 }
 
 
@@ -910,16 +912,15 @@ location.reload();
 
 // ================= format
 function format(n){
-if(n<1000) return n.toFixed(0);
-if(n<1e6) return (n/1000).toFixed(2)+"K";
-return (n/1e6).toFixed(2)+"M";
-if(n < 1_000) return n.toFixed(0);          // 0～999
-if(n < 1_000_000) return (n/1_000).toFixed(2) + "K";  // 千
-if(n < 1_000_000_000) return (n/1_000_000).toFixed(2) + "M";  // 百万
-if(n < 1_000_000_000_000) return (n/1_000_000_000).toFixed(2) + "B"; // 十億 (Billion)
-if(n < 1_000_000_000_000_000) return (n/1_000_000_000_000).toFixed(2) + "T"; // 兆
-if(n < 1_000_000_000_000_000_000) return (n/1_000_000_000_000_000).toFixed(2) + "P"; // 京
-return (n/1_000_000_000_000_000_000).toFixed(2) + "E"; // 垓（Exa）
+    if(n < 1000) return n.toFixed(0);
+    if(n < 1_000_000) return (n / 1_000).toFixed(2) + "K";
+    if(n < 1_000_000_000) return (n / 1_000_000).toFixed(2) + "M";
+    if(n < 1_000_000_000_000) return (n / 1_000_000_000).toFixed(2) + "B";
+    if(n < 1_000_000_000_000_000) return (n / 1_000_000_000_000).toFixed(2) + "T";
+    if(n < 1_000_000_000_000_000_000) return (n / 1_000_000_000_000_000).toFixed(2) + "Qa";
+    if(n < 1e21) return (n / 1e18).toFixed(2) + "Qi";
+
+    return n.toExponential(2); // 最終保険
 }
 
 updateUI();
