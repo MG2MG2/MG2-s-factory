@@ -589,12 +589,12 @@ document.getElementById("gachaRate").innerHTML =
 
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
-return Math.floor(10*Math.pow(1.08,gachaCount));
+return Math.floor(10*Math.pow(1.03,gachaCount));
 }
 
 
 function calcGachaRates(){
-let X = 1.6; // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
+let X = 1.4; // ← 今使ってる係数と合わせる1🔥🔥🔥🔥🔥🔥🔥
 
 let weights = [];
 let total = 0;
@@ -717,7 +717,7 @@ let total = 0;
 let weights = [];
 
 pool.forEach(f=>{
-let w = 1 / Math.pow(f.id, 1.6); // ← 今使ってる係数と合わせる🔥🔥🔥🔥🔥🔥🔥
+let w = 1 / Math.pow(f.id, 1.4); // ← 今使ってる係数と合わせる2🔥🔥🔥🔥🔥🔥🔥
 weights.push(w);
 total += w;
 });
