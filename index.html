@@ -930,10 +930,18 @@ function resetStatsCache(){
   };
 }
 
-// ================= 転生判定
+// ================= 転生に必要な生産力（10倍ずつ増加）
+function nextRebirth(){
+    const base = 100_000_000;  // 1回目は1億
+    const multiplier = 10;     // 回数ごとに10倍
+
+    return base * Math.pow(multiplier, rebirth);
+}
+
+// 転生可能判定
 function canRebirth(){
-statsCache.dirty = true;  // 最新計算を強制
-  return calcStats().production >= nextRebirth();
+    statsCache.dirty = true;   // 最新計算を強制
+    return calcStats().production >= nextRebirth();
 }
 
 // ================= 転生処理
