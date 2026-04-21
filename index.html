@@ -559,10 +559,14 @@ let p = 0;
 let c = 1;
 
 for(let id in owned){
-let f = facilities.find(x => x.id == Number(id));
+let fid = Number(id);
+let f = facilities.find(x => x.id === fid);
+if(!f) continue;
 
-p += f.prod * Math.pow(owned[id], f.id <= 20 ? 0.95 : 0.85);
-c += f.click * Math.pow(owned[id], 1.1);
+let lv = owned[id];
+
+p += f.prod * Math.pow(lv, f.id <= 20 ? 0.95 : 0.85);
+c += f.click * Math.pow(lv, 1.1);
 }
 
 let b = 1 + rebirth * 0.15;
