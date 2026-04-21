@@ -619,20 +619,30 @@ document.getElementById("gachaRate").innerHTML =
 
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
-// 基本計算
-let cost = Math.floor(10 * Math.pow(1.03, gachaCount));
+    // gachaCount が 0 なら初期価格 10 から
+    let cost = Math.floor(10 * Math.pow(1.03, gachaCount));
 
-// 転生ごとの上限設定
-let cap = 1_000_000; // デフォルト 1回転生
+    // 転生ごとの上限設定
+    let cap = 1_000_000; // 転生0
+    if(rebirth === 1) cap = 10_000_000;    // 1回転生
+    else if(rebirth >= 2) cap = 100_000_000; // 2回転生以上
 
-if(rebirth === 0) cap = 1_000_000;       // 1回目転生前
-else if(rebirth === 1) cap = 10_000_000; // 2回目転生
-else if(rebirth >= 2) cap = 100_000_000; // 3回目以降
+    // 上限を適用
+    if(cost > cap) cost = cap;
 
-// 上限を適用
-if(cost > cap) cost = cap;
+    return cost;
+}
 
-return cost;
+// ================= 転生時に gachaCount をリセット
+function doRebirth(){
+    if(calcStats().production < nextRebirth()) return;
+
+    rebirth++;
+    money = 0;
+    owned = {};
+    gachaCount = 0; // ← これを追加
+
+    updateUI();
 }
 
 
