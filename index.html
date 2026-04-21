@@ -615,7 +615,7 @@ document.getElementById("gachaRate").innerHTML =
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
   // 基本計算
-  let cost = Math.floor(10 * Math.pow(1.01, gachaCount));
+  let cost = Math.floor(10 * Math.pow(1.03, gachaCount));
 
   // 転生ごとの上限設定
   let cap = 1_000_000; // デフォルト 1回転生
