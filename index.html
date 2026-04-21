@@ -847,36 +847,59 @@ function doRebirth(){
 }
 
 
-// ================= セーブ
+// =========================
+// 💾 セーブ
+// =========================
 function saveGame(){
   localStorage.setItem("mg2", JSON.stringify({
-    money: money || 0,
-    owned: owned || {},
-    rebirth: rebirth || 0,
-    gachaCount: gachaCount || 0
+    version: 1,        // バージョン管理
+    money,
+    owned,
+    rebirth,
+    gachaCount
   }));
 }
 
+
+// =========================
+// 📥 ロード
+// =========================
 function loadGame(){
-  let d = localStorage.getItem("mg2");
-  if(!d) return;
+
+  let data = localStorage.getItem("mg2");
+  if(!data) return;
+
+  let d;
 
   try {
-    d = JSON.parse(d);
+    d = JSON.parse(data);
   } catch(e){
     console.log("セーブデータ破損");
     return;
   }
 
+  // =========================
+  // 🧠 バージョン対応
+  // =========================
+  d.version = d.version ?? 1;
+
+  // =========================
+  // 🔄 データ復元
+  // =========================
   money = d.money ?? 0;
   owned = d.owned ?? {};
   rebirth = d.rebirth ?? 0;
   gachaCount = d.gachaCount ?? 0;
 
+  // =========================
+  // 🔄 UI更新
+  // =========================
   updateUI();
   renderShop();
-}
 
+  console.log("ロード完了");
+}
+  
 function resetGame(){
 if(!confirm("リセット？")) return;
 if(!confirm("本当に？")) return;
