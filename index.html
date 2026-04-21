@@ -544,8 +544,19 @@ function buyFacility(id){
 }
 
 function renderShop(){
+
+  const panel = document.getElementById("shopPanel");
+  const scrollPos = panel.scrollTop;
+
   let el=document.getElementById("shopList");
   el.innerHTML="";
+
+  facilities.forEach(f=>{
+    // そのまま
+  });
+
+  panel.scrollTop = scrollPos;
+}
 
   facilities.forEach(f=>{
     let lv=owned[f.id]||0;
