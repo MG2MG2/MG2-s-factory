@@ -837,14 +837,18 @@ document.getElementById("gachaLog").innerHTML="";
 
 // ================= 転生
 function doRebirth(){
-if(calcStats().production < nextRebirth()) return;
 
-rebirth++;
-money=0;
-owned={};
+  // 条件チェック
+  if(calcStats().production < nextRebirth()) return;
 
-updateUI();
-}
+  // 転生回数増加
+  rebirth++;
+
+  // リセット処理
+  money = 0;
+  owned = {};
+  gachaCount = 0; // ←これがガチャリセット
+
 
 // ================= セーブ
 function saveGame(){
