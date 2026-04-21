@@ -733,19 +733,28 @@ return Math.floor(f.baseCost*Math.pow(1.15,lv));
 }
 
 function buyFacility(id){
-let f=facilities.find(x=>x.id==id);
-let lv=owned[id]||0;
+  let f = facilities.find(x => x.id == id);
+  if(!f) return;
 
-let cost=getCost(f);
-if(money<cost) return;
+  // 所持レベル取得
+  let lv = owned[id] || 0;
 
-money -= cost;
-owned[id] = lv + 1;
+  // 購入コスト計算
+  let cost = getCost(f);
+  if(money < cost) return;  // お金不足なら何もしない
 
-markDirty();   // ←これを追加する場所
+  // お金と施設レベル更新
+  money -= cost;
+  owned[id] = lv + 1;
 
-renderShop();
-updateUI();
+  // ------------------------
+  // ★ キャッシュをリセットして即反映
+  // ------------------------
+  resetStatsCache();   // これで production / clickPower キャッシュも初期化
+  updateUI();          // UI もすぐ更新
+
+  // 施設パネル更新
+  renderShop();
 }
 
 function renderShop(){
@@ -900,6 +909,7 @@ function resetStatsCache(){
 
 // ================= 転生判定
 function canRebirth(){
+statsCache.dirty = true;  // 最新計算を強制
   return calcStats().production >= nextRebirth();
 }
 
