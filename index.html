@@ -747,11 +747,10 @@ function buyFacility(id){
   money -= cost;
   owned[id] = lv + 1;
 
-  // ← 修正箇所
+  // キャッシュリセットして即反映
   resetStatsCache();
   const st = calcStats();
-  updateUIFast(st);
-
+  updateUIFast(st); // updateUIでもOK
   renderShop();
 }
 
