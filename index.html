@@ -583,16 +583,13 @@ return 100000000 * Math.pow(15, rebirth);
 
 // ================= UI
 function updateUI(){
-   setInterval(() => {
-  localStorage.setItem("mg2", JSON.stringify({
-    money,
-    owned,
-    rebirth,
-    gachaCount
-  }));
-}, 5000); // 5秒ごとに自動保存
+  let st = calcStats();
+
+  document.getElementById("money").innerText = format(money);
+  document.getElementById("production").innerText = format(st.production);
+  document.getElementById("click").innerText = format(st.clickPower);
+}
    
-let st=calcStats();
 
 document.getElementById("money").innerText=format(money);
 document.getElementById("production").innerText=format(st.production);
