@@ -8,6 +8,7 @@
 <!-- フォント読み込み（ここが2-1） -->
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
 
+
 <style>
 body{
 margin:0;
@@ -583,13 +584,7 @@ return 100000000 * Math.pow(15, rebirth);
 
 // ================= UI
 function updateUI(){
-  let st = calcStats();
-
-  document.getElementById("money").innerText = format(money);
-  document.getElementById("production").innerText = format(st.production);
-  document.getElementById("click").innerText = format(st.clickPower);
-}
-   
+let st=calcStats();
 
 document.getElementById("money").innerText=format(money);
 document.getElementById("production").innerText=format(st.production);
@@ -715,7 +710,7 @@ div.className="card";
 
 div.innerHTML=
 `${f.name} LV${lv}<br>
-   生産:${(f.prod*lv).toFixed(1)} / タップ:${(f.click*lv).toFixed(1)}<br>`;
+  生産:${(f.prod*lv).toFixed(1)} / タップ:${(f.click*lv).toFixed(1)}<br>`;
 
 let btn=document.createElement("button");
 btn.innerText=can?`購入(${format(cost)})`:"未解放";
@@ -847,8 +842,7 @@ if(calcStats().production < nextRebirth()) return;
 rebirth++;
 money=0;
 owned={};
-gachaCount = 0;   // ←ここに追加
-   
+
 updateUI();
 }
 
