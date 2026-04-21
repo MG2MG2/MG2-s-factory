@@ -373,12 +373,6 @@ let owned={};
 let rebirth=0;
 let gachaCount=0;
 
-let statsCache = {
-production: 0,
-clickPower: 1,
-dirty: true
-};
-
 // ================= 施設
 let facilities=[];
 
@@ -561,11 +555,6 @@ el.remove();
 
 // ================= ステータス
 function calcStats(){
-
-if(!statsCache.dirty && Date.now() - statsCache.last < 300){
-return statsCache;
-}
-
 let p = 0;
 let c = 1;
 
@@ -576,21 +565,21 @@ if(!f) continue;
 
 let lv = owned[id];
 
-p += f.prod * Math.pow(lv, f.id <= 20 ? 1.2 : 1.3);
-c += f.click * Math.pow(lv, 1.35);
+p += f.click * Math.pow(lv, 1.0);
+c += f.click * Math.pow(lv, 1.1);
 }
 
 let b = 1 + rebirth * 0.15;
 
-statsCache.production = p * b;
-statsCache.clickPower = c * b;
-
-statsCache.last = Date.now();
-statsCache.dirty = false;
-
-return statsCache;
+return {
+production: p * b,
+clickPower: c * b
+};
 }
 
+function nextRebirth(){//転生の重さ調整🔥🔥🔥🔥🔥🔥🔥🔥
+return 100000000 * Math.pow(15, rebirth);
+}
 
 // ================= UI
 function updateUI(){
@@ -624,18 +613,7 @@ document.getElementById("gachaRate").innerHTML =
 
 // ================= 🔥 ここが抜けてた（ガチャ単価復活）
 function getGachaCost(){
-
-let n = gachaCount;
-
-// 🔵 ① 5万回までは緩やか
-if(n <= 50000){
-return Math.floor(10 * Math.pow(1.01, n));
-}
-
-let base = Math.floor(10 * Math.pow(1.01, 50000));
-let over = n - 50000;
-
-return Math.floor(base * Math.pow(1.04, over));
+return Math.floor(10*Math.pow(1.001,gachaCount));
 }
 
 
@@ -692,41 +670,10 @@ updateUI();
 });
 
 // ================= 自動
-setInterval(() => {
-const st = calcStats();
-
-money += st.production;
-
-updateUIFast(st);
-
-}, 1000);
-
-  function updateUIFast(st){
-function updateUIFast(st){
-
-  const r = calcGachaRates(); // ←これ必須
-
-document.getElementById("money").innerText = format(money);
-document.getElementById("production").innerText = format(st.production);
-document.getElementById("click").innerText = format(st.clickPower);
-
-document.getElementById("shopMoney").innerText = format(money);
-document.getElementById("gachaMoney").innerText = format(money);
-document.getElementById("gachaCost").innerText = format(getGachaCost());
-
-  // ★追加（重要）
-  document.getElementById("gachaRate").innerHTML =
-`☆1：${(r.r1*100).toFixed(3)}%<br>
-☆2：${(r.r2*100).toFixed(3)}%<br>
-★3：${(r.r3*100).toFixed(3)}%<br>
-★4：${(r.r4*100).toFixed(3)}%<br>
-★★5：${(r.r5*100).toFixed(3)}%<br>
-★★★(101)：${(r.r6*100).toFixed(6)}%<br>
-★★★(102)：${(r.r7*100).toFixed(8)}%`;
-
-document.getElementById("rebirthReq").innerText = format(nextRebirth());
-}
-
+setInterval(()=>{
+money+=calcStats().production;
+updateUI();
+},1000);
 
 // ================= 施設
 function getCost(f){
@@ -741,10 +688,8 @@ let lv=owned[id]||0;
 let cost=getCost(f);
 if(money<cost) return;
 
-money -= cost;
-owned[id] = lv + 1;
-
-markDirty();   // ←これを追加する場所
+money-=cost;
+owned[id]=lv+1;
 
 renderShop();
 updateUI();
@@ -764,7 +709,7 @@ div.className="card";
 
 div.innerHTML=
 `${f.name} LV${lv}<br>
- 生産:${(f.prod*lv).toFixed(1)} / タップ:${(f.click*lv).toFixed(1)}<br>`;
+  生産:${(f.prod*lv).toFixed(1)} / タップ:${(f.click*lv).toFixed(1)}<br>`;
 
 let btn=document.createElement("button");
 btn.innerText=can?`購入(${format(cost)})`:"未解放";
@@ -891,67 +836,39 @@ document.getElementById("gachaLog").innerHTML="";
 
 // ================= 転生
 function doRebirth(){
-
 if(calcStats().production < nextRebirth()) return;
 
 rebirth++;
-money = 0;
-owned = {};
-gachaCount = 0;
+money=0;
+owned={};
+
+updateUI();
 }
 
-
-// =========================
-// 💾 セーブ
-// =========================
+// ================= セーブ
 function saveGame(){
-localStorage.setItem("mg2", JSON.stringify({
-version: 1,        // バージョン管理
-money,
-owned,
-rebirth,
-gachaCount
+if(!confirm("セーブ？")) return;
+
+localStorage.setItem("mg2",JSON.stringify({
+money,owned,rebirth,gachaCount
 }));
+
+alert("完了");
 }
 
-
-// =========================
-// 📥 ロード
-// =========================
 function loadGame(){
+if(!confirm("ロード？")) return;
 
-let data = localStorage.getItem("mg2");
-if(!data) return;
+let d=JSON.parse(localStorage.getItem("mg2"));
+if(!d) return;
 
-let d;
+money=d.money;
+owned=d.owned;
+rebirth=d.rebirth;
+gachaCount=d.gachaCount;
 
-try {
-d = JSON.parse(data);
-} catch(e){
-console.log("セーブデータ破損");
-return;
-}
-
-// =========================
-// 🧠 バージョン対応
-// =========================
-d.version = d.version ?? 1;
-
-// =========================
-// 🔄 データ復元
-// =========================
-money = d.money ?? 0;
-owned = d.owned ?? {};
-rebirth = d.rebirth ?? 0;
-gachaCount = d.gachaCount ?? 0;
-
-// =========================
-// 🔄 UI更新
-// =========================
 updateUI();
 renderShop();
-
-console.log("ロード完了");
 }
 
 function resetGame(){
@@ -964,33 +881,11 @@ location.reload();
 
 // ================= format
 function format(n){
-
-if(n < 1000) return n.toFixed(0);
-
-const units = [
-"",
-"K",
-"M",
-"B",
-"T",
-"Qa",
-"Qi",
-"Sx",
-"Sp",
-"Oc",
-"No",
-"Dc"
-];
-
-let i = 0;
-
-while(n >= 1000 && i < units.length - 1){
-n /= 1000;
-i++;
+if(n<1000) return n.toFixed(0);
+if(n<1e6) return (n/1000).toFixed(2)+"K";
+return (n/1e6).toFixed(2)+"M";
 }
 
-return n.toFixed(2) + units[i];
-}
 updateUI();
 
 </script>
